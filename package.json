@@ -3,11 +3,12 @@
     "serve": "node bundler.js serve",
     "build": "node bundler.js build"
   },
-  "main": "public/index.html",
+  "main": "server.js",
   "config": {
-    "port": 9090
+    "port": 60
   },
   "dependencies": {
+    "express": "4.17.1",
     "parcel-bundler": "1.12.4"
   },
   "devDependencies": {

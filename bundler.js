@@ -8,10 +8,10 @@ const arguments = () => {
         case "serve": {
             return [
                 "--global application",
-                process.env.npm_package_main,
+                "index.html",
                 "--out-dir ./distribution",
-                "--public-url ./distribution/",
-                `--port ${process.env.npm_package_config_port}`
+                "--public-url ./",
+                `--port 9090`
             ]
         }
 
@@ -19,9 +19,9 @@ const arguments = () => {
             return [
                 "build",
                 "--global application",
-                process.env.npm_package_main,
+                "index.html",
                 "--out-dir ./distribution",
-                "--public-url ./distribution/",
+                "--public-url ./",
             ]
         }
 
