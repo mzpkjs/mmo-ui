@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "serve": "node bundler.js serve",
-    "build": "node bundler.js build"
+    "serve": "node bundler.js serve index.html",
+    "build": "node bundler.js build index.html"
   },
   "main": "server.js",
   "config": {
