@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "serve": "parcel index.html --global application"
+  },
+  "dependencies": {
+    "parcel-bundler": "1.12.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  }
+}
