@@ -10,8 +10,8 @@ const arguments = () => {
                 "--global application",
                 process.env.npm_package_main,
                 "--out-dir ./distribution",
-                "--public-url ./distribution/",
-                `--port ${process.env.npm_package_config_port}`
+                "--public-url ./",
+                `--port 9090`
             ]
         }
 
@@ -21,7 +21,7 @@ const arguments = () => {
                 "--global application",
                 process.env.npm_package_main,
                 "--out-dir ./distribution",
-                "--public-url ./distribution/",
+                "--public-url ./",
             ]
         }
 
