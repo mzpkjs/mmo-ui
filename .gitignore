@@ -1,5 +1,6 @@
 .cache
 dist
+distribution
 node_modules
 .idea
 
