@@ -7,10 +7,9 @@ const arguments = () => {
     switch (command) {
         case "serve": {
             return [
-                "--global application",
                 input,
+                "--global application",
                 "--out-dir ./distribution",
-                "--public-url ./"
             ]
         }
 
@@ -20,7 +19,6 @@ const arguments = () => {
                 "--global application",
                 input,
                 "--out-dir ./distribution",
-                "--public-url ./",
             ]
         }
 
