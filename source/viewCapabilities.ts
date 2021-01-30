@@ -15,14 +15,14 @@ export const applyPanCapability = (view: Element) => {
     })
 }
 
-export const applyZoomCapability = (view: Element, minZoom: number, maxZoom: number) => {
+export const applyZoomCapability = (view: Element, minZoom: number, maxZoom: number, step: number) => {
     view.addEventListener('wheel', e => {
         e.preventDefault()
         e.stopPropagation()
 
         const transform = view.attributes.getNamedItem('transform')!
         const zoom = getZoom(transform)
-        const deltaZoom = (e as WheelEvent).deltaY / 100;
+        const deltaZoom = Math.sign((e as WheelEvent).deltaY) * step;
         const newZoom = Math.min(maxZoom, Math.max(minZoom, zoom - deltaZoom))
         setZoom(transform, newZoom)
 
