@@ -6,7 +6,7 @@ export const applyPanCapability = (view: Element) => {
     view.addEventListener('mousemove', e => {
         e.preventDefault()
         e.stopPropagation()
-        
+
         if ((e as MouseEvent).buttons === 1) {
             const transform = view.attributes.getNamedItem('transform')!
             const [x, y] = getTranslate(transform)
