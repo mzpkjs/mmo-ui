@@ -6,6 +6,7 @@ export const applyPanCapability = (view: Element) => {
     view.addEventListener('mousemove', e => {
         e.preventDefault()
         e.stopPropagation()
+        
         if ((e as MouseEvent).buttons === 1) {
             const transform = view.attributes.getNamedItem('transform')!
             const [x, y] = getTranslate(transform)
@@ -18,10 +19,17 @@ export const applyZoomCapability = (view: Element, minZoom: number, maxZoom: num
     view.addEventListener('wheel', e => {
         e.preventDefault()
         e.stopPropagation()
+
         const transform = view.attributes.getNamedItem('transform')!
         const zoom = getZoom(transform)
         const deltaZoom = (e as WheelEvent).deltaY / 100;
-        setZoom(transform, Math.min(maxZoom, Math.max(minZoom, zoom - deltaZoom)))
+        const newZoom = Math.min(maxZoom, Math.max(minZoom, zoom - deltaZoom))
+        setZoom(transform, newZoom)
+
+        const [x, y] = getTranslate(transform)
+        const diffX = (e as WheelEvent).x - x
+        const diffY = (e as WheelEvent).y - y
+        setTranslate(transform, x + diffX * (zoom - newZoom) / zoom, y + diffY * (zoom - newZoom) / zoom)
     })
 }
 
