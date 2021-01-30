@@ -6,8 +6,18 @@
     <title>MMO</title>
 </head>
 
-<body>
-    <svg id="viewport" width="1200" height="800">
+<body style="margin:0">
+    <svg id="viewport" width="auto" height="99vh" preserveAspectRatio="none" viewBox="-600 -400 1200 800">
+        <style>
+            polygon {
+                fill: lightgray;
+                stroke: black;
+                stroke-width: 1.5;
+            }
+            g:hover polygon {
+                fill: lightgreen;
+            }
+        </style>
     </svg>
     <script src="source/main.ts"></script>
 </body>
