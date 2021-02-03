@@ -1,5 +1,5 @@
 import { CONFIG } from "./config"
-import { loadChunk } from "./mapProvider"
+import { loadChunk, loadChunks } from "./mapProvider"
 import { Point } from "./point"
 import { range } from "./utils"
 import { applyPanCapability, applyRotateCapability, applyZoomCapability } from "./viewCapabilities"
@@ -11,16 +11,30 @@ applyPanCapability(view)
 applyZoomCapability(view, 0.2, 1, 0.05)
 applyRotateCapability(view)
 
-// const hexGrid = range(-10, 11).flatMap(x => range(-10, 11).map(y => new Hex(x, y, 0)))
-// hexGrid.forEach(hex => view.innerHTML += hex.draw())
+const start = CONFIG.ORIGIN_POINT
+loadChunk(start).then(draw).then(() =>
+    range(0, CONFIG.RENDER_DISTANCE).forEach(async d => {
+        console.log(d)
+        let min, max
 
-range(-CONFIG.RENDER_DISTANCE, CONFIG.RENDER_DISTANCE).forEach(async (x) => {
-    range(-CONFIG.RENDER_DISTANCE, CONFIG.RENDER_DISTANCE).forEach(async (y) => {
+        min = new Point(start.x - d, start.y - d)
+        max = min.translate(new Point(d * 2 - 1, 0))
+        await loadChunks(min, max).then(draw)
         
-        const minBound = new Point(x * CONFIG.CHUNK_SIZE, y * CONFIG.CHUNK_SIZE, 0)
-        const maxBound = minBound.translate(new Point(CONFIG.CHUNK_SIZE, CONFIG.CHUNK_SIZE))
+        min = new Point(start.x + d, start.y - d)
+        max = min.translate(new Point(0, d * 2 - 1))
+        await loadChunks(min, max).then(draw)
 
-        const hexes = await loadChunk({minBound: minBound, maxBound: maxBound})
-        view.innerHTML += hexes.map(h => h.draw()).join()
+        max = new Point(start.x + d, start.y + d)
+        min = max.translate(new Point(- d * 2 + 1, 0))
+        await loadChunks(min, max).then(draw)
+
+        max = new Point(start.x - d, start.y + d)
+        min = max.translate(new Point(0, - d * 2 + 1))
+        await loadChunks(min, max).then(draw)
     })
-})
+)
+
+function draw(result: import("c:/Users/pguzek/IdeaProjects/mmo-ui/source/hex").Hex[]) {
+    view.innerHTML += result.map(h => h.draw()).join()
+}

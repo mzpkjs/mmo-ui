@@ -18,7 +18,7 @@ export class Hex {
         const points = this.hexPoints(center, CONFIG.HEX_SIZE)
 
         return `
-        <g>
+        <g id="${this.position.toString()}">
             <polygon points="${points.join(' ')}">
                 <title>${JSON.stringify(this, null, 4)}</title>
             </polygon>
