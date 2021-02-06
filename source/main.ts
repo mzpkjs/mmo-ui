@@ -21,6 +21,7 @@ function loadIntoMap(map: Map<string, Hex>, origin: Point) {
     return Promise.all(
         range(origin.x - CONFIG.RENDER_DISTANCE, origin.x + CONFIG.RENDER_DISTANCE + 1)
         .flatMap(x => range(origin.y - CONFIG.RENDER_DISTANCE, origin.y + CONFIG.RENDER_DISTANCE + 1).map(y => new Point(x, y)))
+        .filter(chunk => chunk.distance3D(origin) <= CONFIG.RENDER_DISTANCE)
         .sort((p1, p2) => p1.distance3D(origin) - p2.distance3D(origin))
         .map(async chunk => {
             const result = await loadChunk(chunk)
