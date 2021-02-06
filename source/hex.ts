@@ -3,7 +3,6 @@ import { Point } from "./point"
 
 export class Hex {
     public position: Point
-
     public gameObjects: any[]
 
     constructor(x: number, y: number, z: number, gameObjects: any[] = []) {
@@ -11,21 +10,22 @@ export class Hex {
         this.gameObjects = gameObjects
     }
 
-    public draw = (): string => {
+    public draw = () => {
         const center = CONFIG.ORIGIN_POINT
             .translate(CONFIG.X_VERSOR.multiply(this.position.x))
             .translate(CONFIG.Y_VERSOR.multiply(this.position.y))
         const points = this.hexPoints(center, CONFIG.HEX_SIZE)
 
-        return `
-        <g id="${this.position.toString()}">
+        const g = document.createElementNS("http://www.w3.org/2000/svg", 'g')
+        g.id = this.position.toString()
+        g.innerHTML = `
             <polygon points="${points.join(' ')}">
                 <title>${JSON.stringify(this, null, 4)}</title>
             </polygon>
             <text x="${center.x}" y="${center.y}" text-anchor="middle">${this.position.distance2D(new Point(0, 0, 0))}</text>
-            <text x="${center.x}" y="${center.y + 18}" text-anchor="middle" style="font-size:10px;fill:gray">(${new Point(this.position.x, this.position.y)})</text>
-        </g>
+            <text x="${center.x}" y="${center.y + 18}" text-anchor="middle" style="font-size:10px;fill:gray">(${this.position})</text>
         `
+        return g
     }
 
     private hexPoints = (center: Point, size: number) => {

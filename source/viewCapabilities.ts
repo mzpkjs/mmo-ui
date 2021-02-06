@@ -1,7 +1,28 @@
+import { CONFIG } from "./config"
+import { Point } from "./point"
 
 const TRANSLATE_REGEXP = /translate\(([-0-9\.]+) ([-0-9\.]+)\)/
 const SCALE_REGEXP = /scale\(([-0-9\.]+)\)/
 const ROTATE_REGEXP = /rotate\(([-0-9\.]+)\)/
+
+export const applyOriginChangeCapability = (view: Element, onOriginChange: (newOrigin: Point) => void) => {
+    view.addEventListener('mousedown', e => {
+        if ((e as MouseEvent).buttons === 2) {
+            view.querySelector('[selected]')?.removeAttribute('selected')
+            const hexElement = ((e as MouseEvent).target as Element).parentElement!
+            hexElement.setAttribute('selected', 'true')
+
+            let [x, y] = hexElement.id.split(', ').map(i => parseInt(i))
+            x = Math.floor(x / CONFIG.CHUNK_SIZE)
+            y = Math.floor(y / CONFIG.CHUNK_SIZE)
+            onOriginChange(new Point(x, y))
+        }
+    })
+}
+
+export const preventContextMenuCapability = (view: Element) => {
+    view.addEventListener('contextmenu', e => e.preventDefault())
+}
 
 export const applyPanCapability = (view: Element) => {
     view.addEventListener('mousemove', e => {

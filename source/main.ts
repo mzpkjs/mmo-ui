@@ -1,40 +1,31 @@
 import { CONFIG } from "./config"
-import { loadChunk, loadChunks } from "./mapProvider"
+import { Hex } from "./hex"
+import { loadChunk } from "./mapProvider"
 import { Point } from "./point"
 import { range } from "./utils"
-import { applyPanCapability, applyRotateCapability, applyZoomCapability } from "./viewCapabilities"
+import { applyOriginChangeCapability, applyPanCapability, applyRotateCapability, applyZoomCapability, preventContextMenuCapability } from "./viewCapabilities"
 
+const map = new Map<string, Hex>()
 const view = document.querySelector('#view')!
-view.addEventListener('contextmenu', e => e.preventDefault())
 
+preventContextMenuCapability(view)
 applyPanCapability(view)
-applyZoomCapability(view, 0.2, 1, 0.05)
+applyZoomCapability(view, 0.2, 1.2, 0.05)
 applyRotateCapability(view)
+applyOriginChangeCapability(view, newOrigin => loadIntoMap(map, newOrigin))
 
-const start = CONFIG.ORIGIN_POINT
-loadChunk(start).then(draw).then(() =>
-    range(0, CONFIG.RENDER_DISTANCE).forEach(async d => {
-        console.log(d)
-        let min, max
 
-        min = new Point(start.x - d, start.y - d)
-        max = min.translate(new Point(d * 2 - 1, 0))
-        await loadChunks(min, max).then(draw)
-        
-        min = new Point(start.x + d, start.y - d)
-        max = min.translate(new Point(0, d * 2 - 1))
-        await loadChunks(min, max).then(draw)
+loadIntoMap(map, CONFIG.ORIGIN_POINT)
 
-        max = new Point(start.x + d, start.y + d)
-        min = max.translate(new Point(- d * 2 + 1, 0))
-        await loadChunks(min, max).then(draw)
-
-        max = new Point(start.x - d, start.y + d)
-        min = max.translate(new Point(0, - d * 2 + 1))
-        await loadChunks(min, max).then(draw)
-    })
-)
-
-function draw(result: import("c:/Users/pguzek/IdeaProjects/mmo-ui/source/hex").Hex[]) {
-    view.innerHTML += result.map(h => h.draw()).join()
+function loadIntoMap(map: Map<string, Hex>, origin: Point) {
+    return Promise.all(
+        range(origin.x - CONFIG.RENDER_DISTANCE, origin.x + CONFIG.RENDER_DISTANCE + 1)
+        .flatMap(x => range(origin.y - CONFIG.RENDER_DISTANCE, origin.y + CONFIG.RENDER_DISTANCE + 1).map(y => new Point(x, y)))
+        .sort((p1, p2) => p1.distance3D(origin) - p2.distance3D(origin))
+        .map(async chunk => {
+            const result = await loadChunk(chunk)
+            view.append(...result.map(h => h.draw()))
+            result.forEach(h => map.set(h.position.toString(), h))
+        })
+    )
 }

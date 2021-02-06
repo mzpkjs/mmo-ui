@@ -3,7 +3,7 @@ import { Point } from "./point"
 const SIZE = 40
 
 export const CONFIG = {
-    CHUNK_SIZE: 5,
+    CHUNK_SIZE: 2,
     RENDER_DISTANCE: 4,
     HEX_SIZE: SIZE,
     ORIGIN_POINT: new Point(0, 0),
