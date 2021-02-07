@@ -14,7 +14,6 @@ export const loadChunk = async (point: Point) => {
     if (loadedChunks.has(point.toString())) {
         return []
     }
-    await new Promise(r => setTimeout(r, 100))
     
     const minBound = point.multiply(CONFIG.CHUNK_SIZE)
     const maxBound = minBound.translate(new Point(CONFIG.CHUNK_SIZE, CONFIG.CHUNK_SIZE, 1))
@@ -26,4 +25,8 @@ export const loadChunk = async (point: Point) => {
             range(minBound.z, maxBound.z).map(z => new Hex(x, y, z))
         )
     )
+}
+
+export const unloadChunk = (point: Point) => {
+    loadedChunks.delete(point.toString())
 }

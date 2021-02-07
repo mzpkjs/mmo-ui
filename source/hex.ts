@@ -3,10 +3,12 @@ import { Point } from "./point"
 
 export class Hex {
     public position: Point
+    public chunkPosition: Point
     public gameObjects: any[]
 
     constructor(x: number, y: number, z: number, gameObjects: any[] = []) {
         this.position = new Point(x, y, z)
+        this.chunkPosition = this.position.map(coord => Math.floor(coord / CONFIG.CHUNK_SIZE))
         this.gameObjects = gameObjects
     }
 

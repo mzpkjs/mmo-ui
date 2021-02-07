@@ -7,8 +7,9 @@
 </head>
 
 <body style="margin:0">
-    <svg width="auto" height="99vh" preserveAspectRatio="none" viewBox="0 0 1200 800" style="border-bottom: 3.5px groove darkgray; border-right: 3.5px groove darkgray">
-        <g id="view" transform="translate(600 400) scale(0.3) rotate(0)">
+    <svg width="auto" height="99vh" preserveAspectRatio="none" viewBox="0 0 1200 800"
+    style="border-bottom: 3.5px groove darkgray; border-right: 3.5px groove darkgray;">
+        <g id="view" transform="translate(600 400) scale(0.5) rotate(0)">
             <style>
                 polygon {
                     fill: lightgray;
@@ -16,6 +17,9 @@
                     stroke-width: 1.5;
                 }
                 #view g:hover polygon {
+                    fill: lightyellow;
+                }
+                #view g g:hover polygon {
                     fill: lightgreen;
                 }
                 #view g[selected] polygon {
