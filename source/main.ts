@@ -1,6 +1,6 @@
 import { CONFIG } from "./config"
 import { Hex } from "./hex"
-import { loadChunk, unloadChunk } from "./mapProvider"
+import { loadChunkDB, unloadChunk } from "./mapProvider"
 import { Point } from "./point"
 import { range, unique } from "./utils"
 import { applyOriginChangeCapability, applyPanCapability, applyRotateCapability, applyZoomCapability, preventContextMenuCapability } from "./viewCapabilities"
@@ -27,9 +27,8 @@ function loadIntoMap(origin: Point) {
         range(origin.x - CONFIG.RENDER_DISTANCE, origin.x + CONFIG.RENDER_DISTANCE + 1)
         .flatMap(x => range(origin.y - CONFIG.RENDER_DISTANCE, origin.y + CONFIG.RENDER_DISTANCE + 1).map(y => new Point(x, y)))
         .filter(chunk => chunk.distance3D(origin) <= CONFIG.RENDER_DISTANCE)
-        .sort((p1, p2) => p1.distance3D(origin) - p2.distance3D(origin))
         .map(async chunkPosition => {
-            const result = await loadChunk(chunkPosition)
+            const result = await loadChunkDB(chunkPosition)
             if (result.length !== 0) {
                 result.forEach(h => map.set(h.position.toString(), h))
     
@@ -54,7 +53,6 @@ function unloadFromMap(origin: Point) {
         })
         .filter(unique)
         .map(chunkId => {
-            console.log(chunkId)
             view.querySelector('#' + CSS.escape(chunkId))!.remove()
             const chunk = new Point(...chunkId
                 .slice(6)

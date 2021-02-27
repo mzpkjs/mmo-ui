@@ -29,4 +29,31 @@ export const loadChunk = async (point: Point) => {
 
 export const unloadChunk = (point: Point) => {
     loadedChunks.delete(point.toString())
+    console.log('unload', point.toString())
+}
+
+export const loadChunkDB = async (point: Point) => {
+    if (loadedChunks.has(point.toString())) {
+        return []
+    }
+    console.log('load', point.toString())
+
+    const minBound = point.multiply(CONFIG.CHUNK_SIZE)
+    const maxBound = minBound.translate(new Point(CONFIG.CHUNK_SIZE - 1, CONFIG.CHUNK_SIZE - 1, 0))
+
+    const response = await fetch('http://localhost:3000', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            minBound: minBound,
+            maxBound: maxBound
+        })
+    })
+    const body = await response.json();
+
+    loadedChunks.add(point.toString())
+    return (body as unknown as Hex[]).map(h => new Hex(h.position.x, h.position.y, h.position.z, h.gameObjects))
 }
