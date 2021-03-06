@@ -1,6 +1,7 @@
 import { Point } from "./point";
 
 export const range = (start: number, stop: number) => [...Array(stop - start)].map((e, i) => i + start)
+export const unique = (element: any, index: number, array: any[]) => array.indexOf(element) === index
 
 export const HEX_MOVE = {
     RIGHT:          new Point(1, 0, 0),

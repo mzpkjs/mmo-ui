@@ -22,24 +22,23 @@ loadIntoMap(CONFIG.ORIGIN_POINT)
 
 
 function loadIntoMap(origin: Point) {
-    const chunkGroup = document.createDocumentFragment()
-    return Promise.all(
-        range(origin.x - CONFIG.RENDER_DISTANCE, origin.x + CONFIG.RENDER_DISTANCE + 1)
-        .flatMap(x => range(origin.y - CONFIG.RENDER_DISTANCE, origin.y + CONFIG.RENDER_DISTANCE + 1).map(y => new Point(x, y)))
-        .filter(chunk => chunk.distance3D(origin) <= CONFIG.RENDER_DISTANCE)
-        .map(async chunkPosition => {
-            const result = await loadChunkDB(chunkPosition)
-            if (result.length !== 0) {
-                result.forEach(h => map.set(h.position.toString(), h))
-    
-                const chunk = document.createElementNS("http://www.w3.org/2000/svg", 'g')
-                chunk.id = `chunk ${chunkPosition}`
-                chunk.append(...result.map(h => h.draw()))
-                
-                chunkGroup.append(chunk)
-            }
-        })
-    ).then(() => view.append(chunkGroup))
+    range(origin.x - CONFIG.RENDER_DISTANCE, origin.x + CONFIG.RENDER_DISTANCE + 1)
+    .flatMap(x => range(origin.y - CONFIG.RENDER_DISTANCE, origin.y + CONFIG.RENDER_DISTANCE + 1).map(y => new Point(x, y)))
+    .filter(chunk => chunk.distance3D(origin) <= CONFIG.RENDER_DISTANCE)
+    .forEach(async chunkPosition => {
+        const result = await loadChunkDB(chunkPosition)
+        if (result.length !== 0) {
+            result.forEach(h => map.set(h.position.toString(), h))
+            
+            const chunk = document.createElementNS("http://www.w3.org/2000/svg", 'g')
+            chunk.id = `chunk ${chunkPosition}`
+            chunk.append(...result.map(h => h.draw()))
+            
+            const chunkDocument = document.createDocumentFragment()
+            chunkDocument.append(chunk)
+            view.append(chunkDocument)
+        }
+    })
 }
 
 function unloadFromMap(origin: Point) {
